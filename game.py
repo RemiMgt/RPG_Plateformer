@@ -1,0 +1,5 @@
+import pygame
+
+class Game :
+    def __init__(self) :
+        # A remplir
