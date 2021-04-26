@@ -37,7 +37,7 @@ pygame.init()
 #Création fenêtre :
 fenetre_width, fenetre_height = 1290, 723
 pygame.display.set_caption("Titre jeu")
-fenetre = pygame.display.set_mode((fenetre_width, fenetre_height), pygame.FULLSCREEN)#, FULLSCREEN
+fenetre = pygame.display.set_mode((fenetre_width, fenetre_height))#, FULLSCREEN
 
 #Menu :
 background = pygame.image.load("assets/fond_ecran.jpg")
