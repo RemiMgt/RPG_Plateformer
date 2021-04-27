@@ -121,7 +121,10 @@ def options():
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
 def jeux():
-    pass
+    fenetre.blit(background, (0, 0))
+    for coffre in game.all_coffre:
+        fenetre.blit(coffre.image, coffre.rect)
+        coffre.animated(0)
 
 #Création game :
 game = Game()
