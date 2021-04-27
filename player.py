@@ -1,25 +1,26 @@
 import pygame
 import random
+from animation import Animation
 
-class Player(pygame.sprite.Sprite) :
-    def __init__(self) :
-        self.image = pygame.image.load("sprite/perso.png")
+class Player(Animation):
+    def __init__(self):
+        super().__init__([4],["player"])
         self.rect = self.image.get_rect()
         self.speed = 7
         self.health = 5
         self.inventaire = {}
 
-    def droite(self) :
-        #Si pas de collison avec murs :
+    def droite(self):
+        #Si pas de collison avec obstacles :
         self.rect.x += self.speed
 
-    def gauche(self) :
+    def gauche(self):
         #Si pas de collison avec murs :
         self.rect.x -= self.speed
 
-    def saut(self) :
+    def saut(self):
         #Si pas de collison avec murs :
         pass
 
-    def accroupir(self) :
+    def accroupir(self):
         pass
