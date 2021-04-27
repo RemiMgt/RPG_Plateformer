@@ -2,7 +2,7 @@ import pygame
 
 class Animation(pygame.sprite.Sprite):
 
-    def __init__(self, taille_tab, n_image):
+    def __init__(self, taille_tab, n_image, temps):
         super().__init__()
         if taille_tab != n_image:
             print("erreur le nombre dimage et de taille ne sont pas les meme")
@@ -11,19 +11,23 @@ class Animation(pygame.sprite.Sprite):
         self.tab = self.load()
         self.index = [0] * len(taille_tab)
         self.image = pygame.image.load('assets/player/'+n_image[0]+".png")
-        self.tab_delay = ["False"] * 10
-        self.tab_delay.append("True")
-        self.index_delay = 0
+        self.image = pygame.transform.scale(self.image, (356, 512))
+        self.tab_delay = []
+        for i in range(len(temps)):
+            self.tab_delay.append(["False"]*temps[i])
+            self.tab_delay[i].append("True")
+        self.index_delay = [0]*len(temps)
 
-    def animated(self, i) :
-        self.index_delay += 1
-        if self.tab_delay[self.index_delay] == "True" :
-            self.index_delay = 0
+    def animated(self, i):
+        self.index_delay[i] += 1
+        if self.tab_delay[i][self.index_delay[i]] == "True" :
+            self.index_delay[i] = 0
             if self.index[i] == len(self.tab[i]) - 1 :
                 self.index[i] = 0
             else:
                 self.index[i] += 1
                 self.image = self.tab[i][self.index[i]]
+                self.image = pygame.transform.scale(self.image, (356, 512))
 
     def load(self):
         images =[]
