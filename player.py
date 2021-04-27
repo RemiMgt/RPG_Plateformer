@@ -4,7 +4,7 @@ from animation import Animation
 
 class Player(Animation):
     def __init__(self):
-        super().__init__([4],["player"])
+        super().__init__([4],["player"],[10])
         self.rect = self.image.get_rect()
         self.speed = 7
         self.health = 5
