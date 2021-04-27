@@ -1,9 +1,13 @@
 import pygame
 from player import Player
+from coffre import Coffre
+
 
 class Game :
     def __init__(self):
         self.keys ={}
+        self.all_coffre = pygame.sprite.Group()
+        self.all_coffre.add(Coffre(self))
         self.player = Player()
         self.stat = "menu"
         self.index = 0
