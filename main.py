@@ -144,12 +144,6 @@ def jeux():
         for y in range(len(map.blockmaplayer1[x])):
             fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
-    for coffre in game.all_coffre:
-        fenetre.blit(coffre.image, coffre.rect)
-        coffre.animated(0)
-    for monstre in game.all_monstre :
-        fenetre.blit(monstre.image, monstre.rect)
-        monstre.animated(0)
 
     if gamemode == "edit-map":
         speed = 15
