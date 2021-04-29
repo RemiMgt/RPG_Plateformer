@@ -113,7 +113,7 @@ index_gravite = 0
 
 #Map :
 lon,lar = 64,64
-map = Map(lon, lar, "maplayer0", "maplayer0")
+map = Map(lon, lar, "maplayer0", "maplayer1")
 map.map_import(map.blockmaplayer0, "maplayer0")
 map.map_import(map.blockmaplayer1, "maplayer1")
 

@@ -12,7 +12,7 @@ class Map():
     def __init__(self, width, height, blockmaplayer0name, blockmaplayer1name) :
         self.width = width
         self.height = height
-        self.blockmaplayer0 = []
+        self.blockmaplayer0 = [[0 for i in range (self.height)] for i in range (self.width)]
         self.map_import(self.blockmaplayer0, blockmaplayer0name)
         self.blockmaplayer1 = [[0 for i in range (self.height)] for i in range (self.width)]
         self.map_import(self.blockmaplayer1, blockmaplayer1name)
