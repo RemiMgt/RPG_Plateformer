@@ -7,8 +7,7 @@ from map import *
 
 class Game :
     def __init__(self):
-        self.keys ={}
-        self.map = Map(64, 64)
+        self.keys = {}
         self.all_coffre = pygame.sprite.Group()
         self.all_monstre = pygame.sprite.Group()
         self.all_coffre.add(Coffre(self))

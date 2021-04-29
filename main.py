@@ -48,7 +48,7 @@ fpsClock = pygame.time.Clock()
 
 #Music :
 musique_menu = pygame.mixer.Sound("assets/music/musique_accueil.ogg")
-musique_menu.set_volume(0.1)
+musique_menu.set_volume(0)
 musique_menu.play(-1)
 
 #Bruitages :
@@ -112,9 +112,15 @@ tab_gravite.append("True")
 index_gravite = 0
 
 #Map :
-map = Map(64, 64)
+lon,lar = 64,64
+map = Map(lon, lar, "maplayer0", "maplayer0")
+map.map_import(map.blockmaplayer0, "maplayer0")
+map.map_import(map.blockmaplayer1, "maplayer1")
 
-map.map_import("map")
+#edition de map
+gamemode = "edit-map"
+posx_edit_map = 0
+posy_edit_map = 0
 
 #Fonctions jeux:
 def menu() :
@@ -128,13 +134,15 @@ def options():
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
 def jeux():
+    global posx_edit_map
+    global posy_edit_map
     fenetre.blit(background, (0, 0))
     for x in range(len(map.blockmaplayer0)):
         for y in range(len(map.blockmaplayer0[x])):
-            fenetre.blit(blocks.blockstextures[map.blockmaplayer0[x][y]], (x*48, y*48))
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer0[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
     for x in range(len(map.blockmaplayer1)):
         for y in range(len(map.blockmaplayer1[x])):
-            fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48, y*48))
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     for coffre in game.all_coffre:
         fenetre.blit(coffre.image, coffre.rect)
@@ -142,6 +150,45 @@ def jeux():
     for monstre in game.all_monstre :
         fenetre.blit(monstre.image, monstre.rect)
         monstre.animated(0)
+
+    if gamemode == "edit-map":
+        speed = 15
+        try:
+            if game.keys[pygame.K_LEFT]:
+                if posx_edit_map< 0:
+                    posx_edit_map += speed
+        except KeyError:
+            pass
+        try:
+            if game.keys[pygame.K_RIGHT]:
+                x = lon*48-fenetre_width-48
+                x = -x
+
+                if posx_edit_map > x:
+                    posx_edit_map -= speed
+        except KeyError:
+            pass
+        try:
+            if game.keys[pygame.K_UP]:
+
+
+                if posy_edit_map < 0:
+                    posy_edit_map += speed
+        except KeyError:
+            pass
+        try:
+            if game.keys[pygame.K_DOWN]:
+                y = lar*48-fenetre_height
+                y= -y
+                if posy_edit_map>y:
+                    posy_edit_map -= speed
+        except KeyError:
+            pass
+
+
+
+
+
 
 #Création game :
 game = Game()
@@ -216,6 +263,19 @@ while boucle :
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
                     game.stat = "menu"
+                elif gamemode == "edit-map":
+                    blockundermousex = (pygame.mouse.get_pos()[0] - posx_edit_map) //48
+                    blockundermousey = (pygame.mouse.get_pos()[1] - posy_edit_map) //48
+                    if pygame.mouse.get_pressed()[2]:
+                        if map.blockmaplayer0[blockundermousex][blockundermousey]:
+                            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, "terre_pleine")
+                        else:
+                            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, "terre_pleine")
+                    elif pygame.mouse.get_pressed()[0]:
+                        if map.blockmaplayer1[blockundermousex][blockundermousey]:
+                            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, "vide")
+                        else:
+                            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, "vide")
             if game.stat == "menu" :
                 if bouton_play[1].collidepoint(event.pos):
                     bruitage_avancer.play()
@@ -233,3 +293,7 @@ while boucle :
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
                     game.stat = "menu"
+
+if not boucle:
+    map.map_export("maplayer0", map.blockmaplayer0)
+    map.map_export("maplayer1", map.blockmaplayer1)

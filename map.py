@@ -9,11 +9,13 @@ class Blocks():
 blocks = Blocks()
 
 class Map():
-    def __init__(self, width, height) :
+    def __init__(self, width, height, blockmaplayer0name, blockmaplayer1name) :
         self.width = width
         self.height = height
-        self.blockmaplayer0 = [[0 for i in range (self.height)] for i in range (self.width)]
+        self.blockmaplayer0 = []
+        self.map_import(self.blockmaplayer0, blockmaplayer0name)
         self.blockmaplayer1 = [[0 for i in range (self.height)] for i in range (self.width)]
+        self.map_import(self.blockmaplayer1, blockmaplayer1name)
 
     def setblock(self, layer, x, y, blockname):
         try:
@@ -21,15 +23,13 @@ class Map():
         except IndexError:
             print("Hors Map")
 
-    def map_export(self, filename, map):
+    def map_export(self, filename, layer):
         mapexport = open("maps/"+filename+".txt", "w")
-        mapexport.write(str(map[:-1]))
+        mapexport.write(str(layer))
         mapexport.close()
 
-    def map_import(self, filename):
+    def map_import(self, layer, filename):
         mapimport = open("maps/"+filename+".txt", "r")
-        try:
-            self.blockmaplayer0 = list(eval(mapimport.read()))
-        except:
-            pass
+        layer = list(eval(mapimport.read()))
         mapimport.close()
+        return layer
