@@ -37,6 +37,7 @@ from pygame.locals import *
 
 from game import Game
 from animation import Animation
+from map import *
 
 #Initialisation :
 pygame.init()
@@ -57,12 +58,12 @@ bruitage_avancer.set_volume(5)
 bruitage_reculer.set_volume(5)
 
 #Création fenêtre :
-fenetre_width, fenetre_height = 1290, 723
+fenetre_width, fenetre_height = 1290, 723  #1290 / 723
 pygame.display.set_caption("Titre jeu")
 fenetre = pygame.display.set_mode((fenetre_width, fenetre_height))
 
 #Menu :
-background = pygame.image.load("assets/fond_ecran.jpg")
+background = pygame.image.load("assets/fond_ecran.png")
 background = pygame.transform.scale(background, (fenetre_width, fenetre_height))
 images_boutons = pygame.image.load("assets/bouton/boutons.png")
 
@@ -99,7 +100,7 @@ def generate_rect_button(lien, pos, dim) :
 bouton_play = generate_rect_button("assets/bouton/bouton_play.png", (250, 150), (170, 45))
 bouton_settings = generate_rect_button("assets/bouton/bouton_option.png", (250, 350), (170, 45))
 bouton_exit = generate_rect_button("assets/bouton/bouton_exit.png", (250, 550), (170, 45))
-bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (30, 600), (170, 45))
+bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (30, 650), (170, 45))
 
 #Gravité :
 socle = generate_rect("assets/support.png", (750, 570))
@@ -107,7 +108,13 @@ socle[0] = pygame.transform.scale(socle[0], (400, 100))
 delay = 5
 tab_gravite = ["False"] * delay
 tab_gravite.append("True")
+
 index_gravite = 0
+
+#Map :
+map = Map(64, 64)
+
+map.map_import("map")
 
 #Fonctions jeux:
 def menu() :
@@ -121,7 +128,20 @@ def options():
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
 def jeux():
-    pass
+    fenetre.blit(background, (0, 0))
+    for x in range(len(map.blockmaplayer0)):
+        for y in range(len(map.blockmaplayer0[x])):
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer0[x][y]], (x*48, y*48))
+    for x in range(len(map.blockmaplayer1)):
+        for y in range(len(map.blockmaplayer1[x])):
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48, y*48))
+    fenetre.blit(bouton_retour[0], bouton_retour[1])
+    for coffre in game.all_coffre:
+        fenetre.blit(coffre.image, coffre.rect)
+        coffre.animated(0)
+    for monstre in game.all_monstre :
+        fenetre.blit(monstre.image, monstre.rect)
+        monstre.animated(0)
 
 #Création game :
 game = Game()
@@ -154,17 +174,16 @@ while boucle :
         bouton_exit = generate_rect_button("assets/bouton/bouton_exit.png", (50, 450), (170, 45))
 
     if bouton_retour[1].collidepoint((x,y)) :
-        bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (25, 595), (180, 55))
+        bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (25, 645), (180, 55))
     else:
-        bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (30, 600), (170, 45))
+        bouton_retour = generate_rect_button("assets/bouton/bouton_retour.png", (30, 650), (170, 45))
 
     #Stats :
     if game.stat == "menu":
         menu()
         '''Gravite'''
-
         fenetre.blit(game.player.image,game.player.rect)
-        game.player.animated(0)
+        game.player.animated(1)
         fenetre.blit(socle[0], socle[1])
         index_gravite += 1
         if tab_gravite[index_gravite] == "True" :
@@ -193,6 +212,10 @@ while boucle :
             game.keys[event.key] = False
 
         if event.type == pygame.MOUSEBUTTONDOWN :
+            if game.stat == "game" :
+                if bouton_retour[1].collidepoint(event.pos) :
+                    bruitage_reculer.play()
+                    game.stat = "menu"
             if game.stat == "menu" :
                 if bouton_play[1].collidepoint(event.pos):
                     bruitage_avancer.play()

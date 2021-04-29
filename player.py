@@ -2,11 +2,12 @@ import pygame
 import random
 from animation import Animation
 
+
 class Player(Animation):
     def __init__(self):
-        super().__init__([4],["player"], [10])
+        super().__init__([4, 8, 6],"player",["player", "player_run", "player_jump"], [15, 4, 6])
         self.rect = self.image.get_rect()
-        self.rect.x = 780
+        self.rect.x = 740
         self.rect.y = 80
         self.speed = 7
         self.health = 5

@@ -1,9 +1,18 @@
 import pygame
 from player import Player
+from coffre import Coffre
+from monstre import Monstre
+from map import *
+
 
 class Game :
     def __init__(self):
         self.keys ={}
+        self.map = Map(64, 64)
+        self.all_coffre = pygame.sprite.Group()
+        self.all_monstre = pygame.sprite.Group()
+        self.all_coffre.add(Coffre(self))
+        self.all_monstre.add(Monstre(self))
         self.player = Player()
         self.stat = "menu"
         self.index = 0
