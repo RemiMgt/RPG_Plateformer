@@ -391,7 +391,6 @@ while boucle:
 
         if event.type == pygame.KEYDOWN :
             game.keys[event.key] = True
-<<<<<<< HEAD
             if event.key == pygame.K_k :
                 if actual_block >= 1:
                     actual_block -=1
@@ -408,7 +407,6 @@ while boucle:
                 print("Droite")
             if event.key == game.setting.touche["gauche"] :
                 print("Gauche")
-=======
             if event.key == pygame.K_q :
                 if actual_block >= 0:
                     actual_block -=1
@@ -419,7 +417,6 @@ while boucle:
                     actual_block += 1
                 else:
                     actual_block = 0
->>>>>>> a812da2aec0a15f295fb716a4233354d14c11656
 
         if event.type == pygame.KEYUP:
             game.keys[event.key] = False
