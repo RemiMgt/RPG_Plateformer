@@ -3,6 +3,7 @@ from player import Player
 from coffre import Coffre
 from monstre import Monstre
 from map import *
+from setting import Settings
 
 
 class Game :
@@ -15,6 +16,7 @@ class Game :
         self.player = Player()
         self.stat = "menu"
         self.index = 0
+        self.setting = Settings()
 
     def check_collision(self, sprite, group): #FOnction qui retrun True si il y a collision entre sprite et group
         return pygame.sprite.spritecollide(sprite, group, True, pygame.sprite.collide_mask) #sprite / group / Oui ou non détruire entité si il y a collision

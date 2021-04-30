@@ -42,9 +42,12 @@ from map import *
 #Initialisation :
 pygame.init()
 
+#Création game :
+game = Game()
+
 #Music :
 musique_menu = pygame.mixer.Sound("assets/music/musique_accueil.ogg")
-musique_menu.set_volume(0) #0.1
+musique_menu.set_volume(game.setting.volume) #0.1
 musique_menu.play(-1)
 
 #Bruitages :
@@ -118,6 +121,15 @@ posx_edit_map = 0
 posy_edit_map = 0
 actual_block = 0
 
+#TXT
+font = pygame.font.SysFont("aquakanattc", 20, True, False)
+text_surface = font.render("", True, (255, 0, 0))
+surface = pygame.Surface((text_surface.get_width()+20, text_surface.get_height()+20))
+surface.fill((0,0,255))
+surface.blit(text_surface, [surface.get_width()/2 - text_surface.get_width()/2,
+                            surface.get_height()/2 - text_surface.get_height()/2])
+
+
 #Fonctions jeux:
 def menu() :
     fenetre.blit(background, (0, 0))
@@ -128,6 +140,7 @@ def menu() :
 def options():
     fenetre.blit(background, (0, 0))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
+    game.setting.draw(fenetre)
 
 def jeux():
     fenetre.blit(background, (0, 0))
@@ -145,6 +158,9 @@ def playing() :
     for x in range(len(map.blockmaplayer1)):
         for y in range(len(map.blockmaplayer1[x])):
             fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx, y*48+posy))
+    for x in range(len(map.blockmaplayer2)):
+        for y in range(len(map.blockmaplayer2[x])):
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer2[x][y]], (x*48+posx, y*48+posy))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
 
@@ -159,7 +175,82 @@ def editing_map() :
     for x in range(len(map.blockmaplayer1)):
         for y in range(len(map.blockmaplayer1[x])):
             fenetre.blit(blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
+    for x in range(len(map.blockmaplayer2)):
+        for y in range(len(map.blockmaplayer2[x])):
+            fenetre.blit(blocks.blockstextures[map.blockmaplayer2[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
+
+    speed = 20
+    try:
+        if game.keys[pygame.K_LEFT]:
+            if posx_edit_map < 0:
+                posx_edit_map += speed
+    except KeyError:
+        pass
+    try:
+        if game.keys[pygame.K_RIGHT]:
+            x = lon*48-fenetre_width-48
+            x = -x
+
+            if posx_edit_map > x:
+                posx_edit_map -= speed
+    except KeyError:
+        pass
+    try:
+        if game.keys[pygame.K_UP]:
+
+
+            if posy_edit_map < 0:
+                posy_edit_map += speed
+    except KeyError:
+        pass
+    try:
+        if game.keys[pygame.K_DOWN]:
+            y = lar*48-fenetre_height
+            y= -y
+            if posy_edit_map>y:
+                posy_edit_map -= speed
+    except KeyError:
+        pass
+
+    blockundermousex = (pygame.mouse.get_pos()[0] - posx_edit_map) //48
+    blockundermousey = (pygame.mouse.get_pos()[1] - posy_edit_map) //48
+    if pygame.mouse.get_pressed()[2]:
+        if map.blockmaplayer1[blockundermousex][blockundermousey]:
+            map.setblock(map.blockmaplayer2, blockundermousex, blockundermousey, actual_block)
+        elif map.blockmaplayer0[blockundermousex][blockundermousey]:
+            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, actual_block)
+        else:
+            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, actual_block)
+    elif pygame.mouse.get_pressed()[0]:
+        if map.blockmaplayer2[blockundermousex][blockundermousey]:
+            map.setblock(map.blockmaplayer2, blockundermousex, blockundermousey, 0)
+        elif map.blockmaplayer1[blockundermousex][blockundermousey]:
+            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, 0)
+        else:
+            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, 0)
+
+    try:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
+    except:
+        pass
+    try:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
+    except:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
+    try:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
+    except:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
+    try:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-103, 49])
+    except:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[1], (32, 32)), [fenetre.get_size()[0]-103, 49])
+    try:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+2], (32, 32)), [fenetre.get_size()[0]-53, 49])
+    except:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-53, 49])
+
 
     speed = 20
     try:
@@ -228,8 +319,9 @@ def editing_map() :
     except:
         pass
 
-#Création game :
-game = Game()
+#FPS :
+FPS = game.setting.fps
+frame_delay = 1000//FPS
 
 #FPS :
 FPS = 30
@@ -299,6 +391,24 @@ while boucle:
 
         if event.type == pygame.KEYDOWN :
             game.keys[event.key] = True
+<<<<<<< HEAD
+            if event.key == pygame.K_k :
+                if actual_block >= 1:
+                    actual_block -=1
+                else:
+                    actual_block = len(blocks.blocksid)
+            if event.key == pygame.K_m :
+                if actual_block <= len(blocks.blocksid):
+                    actual_block += 1
+                else:
+                    actual_block = 1
+            if event.key == game.setting.touche["haut"] :
+                print("Saute")
+            if event.key == game.setting.touche["droite"] :
+                print("Droite")
+            if event.key == game.setting.touche["gauche"] :
+                print("Gauche")
+=======
             if event.key == pygame.K_q :
                 if actual_block >= 0:
                     actual_block -=1
@@ -309,6 +419,7 @@ while boucle:
                     actual_block += 1
                 else:
                     actual_block = 0
+>>>>>>> a812da2aec0a15f295fb716a4233354d14c11656
 
         if event.type == pygame.KEYUP:
             game.keys[event.key] = False
