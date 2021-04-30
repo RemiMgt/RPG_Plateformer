@@ -121,9 +121,6 @@ posx_edit_map = 0
 posy_edit_map = 0
 actual_block = 1
 
-tesst = pygame.image.load("assets/bouton/bouton_play.png")
-tesst = pygame.transform.scale(tesst, (800, 5))
-
 #TXT
 font = pygame.font.SysFont("aquakanattc", 20, True, False)
 text_surface = font.render("", True, (255, 0, 0))
@@ -144,7 +141,6 @@ def options():
     fenetre.blit(background, (0, 0))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     game.setting.draw(fenetre)
-    fenetre.blit(tesst, (50, 50))
 
 def jeux():
     fenetre.blit(background, (0, 0))
@@ -307,6 +303,11 @@ while boucle:
         '''Gravite'''
     if game.stat == "options" :
         options()
+        #Slider :
+        if pygame.mouse.get_pressed()[0] and game.setting.curseur_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020 :
+            game.setting.curseur_FPS.x = x - 20
+        if pygame.mouse.get_pressed()[0] and game.setting.curseur_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020 :
+            game.setting.curseur_VOLUME.x = x - 20
     if game.stat == "game" :
         jeux()
     if game.stat == "editing_map" :
@@ -326,12 +327,13 @@ while boucle:
 
         if event.type == pygame.KEYDOWN :
             game.keys[event.key] = True
-            if event.key == game.setting.touche["haut"] :
-                print("Saute")
-            if event.key == game.setting.touche["droite"] :
-                print("Droite")
-            if event.key == game.setting.touche["gauche"] :
-                print("Gauche")
+            if game.stat == "playing" :
+                if event.key == game.setting.touche["haut"]:
+                    print("Saute")
+                if event.key == game.setting.touche["droite"] :
+                    print("Droite")
+                if event.key == game.setting.touche["gauche"] :
+                    print("Gauche")
             if event.key == pygame.K_q :
                 if actual_block > 1:
                     actual_block -=1
@@ -375,6 +377,13 @@ while boucle:
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
                     game.stat = "menu"
+                #Boutons touches :
+                if game.setting.selection_azerty_rect.collidepoint(event.pos) :
+                    game.setting.changing("azerty")
+                if game.setting.selection_qwerty_rect.collidepoint(event.pos) :
+                    game.setting.changing("qwerty")
+                if game.setting.selection_fleche_rect.collidepoint(event.pos) :
+                    game.setting.changing("fleche")
             elif game.stat == "editing_map" or game.stat == "playing":
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
