@@ -119,7 +119,10 @@ map = Map(lon, lar, "map1")
 #édition
 posx_edit_map = 0
 posy_edit_map = 0
-actual_block = 0
+actual_block = 1
+
+tesst = pygame.image.load("assets/bouton/bouton_play.png")
+tesst = pygame.transform.scale(tesst, (800, 5))
 
 #TXT
 font = pygame.font.SysFont("aquakanattc", 20, True, False)
@@ -141,6 +144,7 @@ def options():
     fenetre.blit(background, (0, 0))
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     game.setting.draw(fenetre)
+    fenetre.blit(tesst, (50, 50))
 
 def jeux():
     fenetre.blit(background, (0, 0))
@@ -237,11 +241,11 @@ def editing_map() :
     try:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
     except:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-184, 49])
     try:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
     except:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-3], (32, 32)), [fenetre.get_size()[0]-234, 49])
     try:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-103, 49])
     except:
@@ -391,16 +395,6 @@ while boucle:
 
         if event.type == pygame.KEYDOWN :
             game.keys[event.key] = True
-            if event.key == pygame.K_k :
-                if actual_block >= 1:
-                    actual_block -=1
-                else:
-                    actual_block = len(blocks.blocksid)
-            if event.key == pygame.K_m :
-                if actual_block <= len(blocks.blocksid):
-                    actual_block += 1
-                else:
-                    actual_block = 1
             if event.key == game.setting.touche["haut"] :
                 print("Saute")
             if event.key == game.setting.touche["droite"] :
@@ -408,15 +402,15 @@ while boucle:
             if event.key == game.setting.touche["gauche"] :
                 print("Gauche")
             if event.key == pygame.K_q :
-                if actual_block >= 0:
+                if actual_block > 1:
                     actual_block -=1
                 else:
-                    actual_block = len(blocks.blocksid)
+                    actual_block = len(blocks.blocksid)-1
             if event.key == pygame.K_d :
-                if actual_block <= len(blocks.blocksid):
+                if actual_block < len(blocks.blocksid)-1:
                     actual_block += 1
                 else:
-                    actual_block = 0
+                    actual_block = 1
 
         if event.type == pygame.KEYUP:
             game.keys[event.key] = False
