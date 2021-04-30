@@ -238,14 +238,13 @@ def editing_map() :
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
     except:
         pass
-    try:
+
+    if actual_block != 1:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
-    except:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-184, 49])
-    try:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
-    except:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-3], (32, 32)), [fenetre.get_size()[0]-234, 49])
+    else:
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
+        fenetre.blit(pygame.transform.scale(blocks.blockstextures[len(blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
     try:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-103, 49])
     except:
@@ -254,74 +253,6 @@ def editing_map() :
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+2], (32, 32)), [fenetre.get_size()[0]-53, 49])
     except:
         fenetre.blit(pygame.transform.scale(blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-53, 49])
-
-
-    speed = 20
-    try:
-        if game.keys[pygame.K_LEFT]:
-            if posx_edit_map < 0:
-                posx_edit_map += speed
-    except KeyError:
-        pass
-    try:
-        if game.keys[pygame.K_RIGHT]:
-            x = lon*48-fenetre_width-48
-            x = -x
-
-            if posx_edit_map > x:
-                posx_edit_map -= speed
-    except KeyError:
-        pass
-    try:
-        if game.keys[pygame.K_UP]:
-
-
-            if posy_edit_map < 0:
-                posy_edit_map += speed
-    except KeyError:
-        pass
-    try:
-        if game.keys[pygame.K_DOWN]:
-            y = lar*48-fenetre_height
-            y= -y
-            if posy_edit_map>y:
-                posy_edit_map -= speed
-    except KeyError:
-        pass
-
-    blockundermousex = (pygame.mouse.get_pos()[0] - posx_edit_map) //48
-    blockundermousey = (pygame.mouse.get_pos()[1] - posy_edit_map) //48
-    if pygame.mouse.get_pressed()[2]:
-        if map.blockmaplayer0[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, actual_block)
-        else:
-            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, actual_block)
-    elif pygame.mouse.get_pressed()[0]:
-        if map.blockmaplayer1[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, 0)
-        else:
-            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, 0)
-
-    try:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
-    except:
-        pass
-    try:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-184, 49])
-    except:
-        pass
-    try:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-234, 49])
-    except:
-        pass
-    try:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-103, 49])
-    except:
-        pass
-    try:
-        fenetre.blit(pygame.transform.scale(blocks.blockstextures[actual_block+2], (32, 32)), [fenetre.get_size()[0]-53, 49])
-    except:
-        pass
 
 #FPS :
 FPS = game.setting.fps
