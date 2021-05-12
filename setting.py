@@ -5,7 +5,7 @@ class Settings:
     def __init__(self) :
         self.volume = 0.1
         self.fps = 60
-        self.touche = {"haut" : pygame.K_z, "droite" : pygame.K_d, "gauche" : pygame.K_q}
+        self.touche = {"haut" : pygame.K_SPACE, "droite" : pygame.K_d, "gauche" : pygame.K_q}
 
         self.bouton_rond_remplie_image = pygame.image.load("assets/bouton/bouton_settings_remplie.png")
         self.bouton_rond_vide_image = pygame.image.load("assets/bouton/bouton_settings_vide.png")

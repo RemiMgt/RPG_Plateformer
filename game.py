@@ -11,9 +11,10 @@ class Game :
         self.keys = {}
         self.all_coffre = pygame.sprite.Group()
         self.all_monstre = pygame.sprite.Group()
+        self.player = Player()
         self.all_coffre.add(Coffre(self))
         self.all_monstre.add(Monstre(self))
-        self.player = Player()
+
         self.stat = "menu"
         self.index = 0
         self.setting = Settings()
