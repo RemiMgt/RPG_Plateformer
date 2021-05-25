@@ -26,6 +26,11 @@ class Game :
         self.air_timer = 0
         self.setting = Settings()
 
+        #Pos map :
+        self.posx = 0
+        self.posy = 0
+
+
     def check_collision(self, sprite, group): #FOnction qui retrun True si il y a collision entre sprite et group
         return pygame.sprite.spritecollide(sprite, group, True, pygame.sprite.collide_mask) #sprite / group / Oui ou non détruire entité si il y a collision
 

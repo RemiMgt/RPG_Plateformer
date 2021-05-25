@@ -159,24 +159,22 @@ def jeux():
 
 def playing() :
     game.player.animated()
-    posx = 0
-    posy = 0
     fenetre.blit(background, (0, 0))
     for x in range(len(game.map.blockmaplayer0)):
         for y in range(len(game.map.blockmaplayer0[x])):
             if game.map.blockmaplayer0[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+posx, y*48+posy))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+game.posx, y*48+game.posy))
                 game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
     for x in range(len(game.map.blockmaplayer1)):
         for y in range(len(game.map.blockmaplayer1[x])):
             if game.map.blockmaplayer1[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48+posx, y*48+posy))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48+game.posx, y*48+game.posy))
     for x in range(len(game.map.blockmaplayer2)):
         for y in range(len(game.map.blockmaplayer2[x])):
             if game.map.blockmaplayer2[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+posx, y*48+posy))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+game.posx, y*48+game.posy))
 
-    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+posx, game.map.spawn.spawn[1]*48+posy))
+    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+game.posx, game.map.spawn.spawn[1]*48+game.posy))
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, game.player.rect)
@@ -188,8 +186,12 @@ def playing() :
         game.player.saut()
     if game.keys.get(game.setting.touche["droite"]) :
         game.player.droite()
-    if game.keys.get(game.setting.touche["gauche"]) :
+        game.player.mouvement = "droite"
+    elif game.keys.get(game.setting.touche["gauche"]) :
         game.player.gauche()
+        game.player.mouvement = "gauche"
+    else :
+        game.player.mouvement = ""
 
 
 
@@ -208,6 +210,17 @@ def playing() :
         game.air_timer = 0
     else:
         game.air_timer += 1
+
+    #Map's movements function player's direction :
+    if game.player.mouvement == "droite" and game.player.rect.x >= 1000 :
+        print("Turn map to left")
+        game.posx -= 30
+        #bouger aussi la map en fonction
+
+    if game.player.mouvement == "gauche" and game.player.rect.x <= 200 :
+        print("Turn map to right")
+        game.posx += 30
+        #bouger aussi la map en fonction
 
 
 def editing_map() :
@@ -348,7 +361,7 @@ while boucle:
     if game.stat == "menu":
         menu()
         '''Gravite'''
-        fenetre.blit(game.player.image,[770, 115])
+        fenetre.blit(game.player.image,[875, 265])
         game.player.mode = "player_run"
         game.player.animated()
         fenetre.blit(socle[0], socle[1])

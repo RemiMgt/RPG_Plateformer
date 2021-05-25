@@ -11,12 +11,13 @@ class Player(Animation):
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
-        self.speed = 10
+        self.speed = 13
         self.speed_jump = -15
         self.health = 5
         self.inventaire = {}
         self.is_jump =False
         self.y_gravite = 1
+        self.mouvement = "" #Droite ou Gauche
 
     def droite(self):
         self.mode = "player_run"
