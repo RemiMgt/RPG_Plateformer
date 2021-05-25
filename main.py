@@ -120,8 +120,7 @@ tab_gravite.append("True")
 index_gravite = 0
 
 #Map :
-lon,lar = 64,64
-map = Map(lon, lar, "map1")
+
 
 #édition
 posx_edit_map = 0
@@ -159,42 +158,57 @@ def jeux():
     fenetre.blit(bouton_create_map[0], bouton_create_map[1])
 
 def playing() :
-    game.player.animated();
+    game.player.animated()
     posx = 0
     posy = 0
-
-
     fenetre.blit(background, (0, 0))
-    for x in range(len(map.blockmaplayer0)):
-        for y in range(len(map.blockmaplayer0[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer0[x][y]], (x*48+posx, y*48+posy))
-    for x in range(len(map.blockmaplayer1)):
-        for y in range(len(map.blockmaplayer1[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx, y*48+posy))
-    for x in range(len(map.blockmaplayer2)):
-        for y in range(len(map.blockmaplayer2[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer2[x][y]], (x*48+posx, y*48+posy))
+    for x in range(len(game.map.blockmaplayer0)):
+        for y in range(len(game.map.blockmaplayer0[x])):
+            if game.map.blockmaplayer0[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+posx, y*48+posy))
+                game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
+    for x in range(len(game.map.blockmaplayer1)):
+        for y in range(len(game.map.blockmaplayer1[x])):
+            if game.map.blockmaplayer1[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48+posx, y*48+posy))
+    for x in range(len(game.map.blockmaplayer2)):
+        for y in range(len(game.map.blockmaplayer2[x])):
+            if game.map.blockmaplayer2[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+posx, y*48+posy))
 
-    fenetre.blit(img_spawn, (map.spawn.spawn[0]*48+posx, map.spawn.spawn[1]*48+posy))
+    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+posx, game.map.spawn.spawn[1]*48+posy))
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, game.player.rect)
-    game.player.saut()
 
+    game.player.movement = [0,0]
+    game.player.mode = "player"
     if game.keys.get(game.setting.touche["haut"]) :
-        if not game.player.is_jump:
-            game.player.mode = "player_jump"
-            game.player.is_saut = True
-            game.player.is_jump = True
-
-    elif game.keys.get(game.setting.touche["droite"]) :
-        game.player.mode = "player_run"
+        game.player.mode = "player_jump"
+        game.player.saut()
+    if game.keys.get(game.setting.touche["droite"]) :
         game.player.droite()
-    elif game.keys.get(game.setting.touche["gauche"]) :
-        game.player.mode = "player_run"
+    if game.keys.get(game.setting.touche["gauche"]) :
         game.player.gauche()
-    else :
-        game.player.mode = "player"
+
+
+
+    game.player.movement[1] += game.player.y_gravite
+    game.player.y_gravite += 0.6
+    if game.player.y_gravite > 15:
+        game.player.y_gravite = 15
+
+    game.player.rect, collisions = game.move(game.player.rect, game.player.movement, game.all_rect)
+
+    if collisions['bottom']:
+        game.player.y_gravite = 0
+        game.air_timer = 0
+    elif collisions['top']:
+        game.player.y_gravite = 0
+        game.air_timer = 0
+    else:
+        game.air_timer += 1
+
 
 def editing_map() :
     global posx_edit_map
@@ -202,16 +216,21 @@ def editing_map() :
     global actual_block
     fenetre.blit(background, (0, 0))
     fenetre.blit(cadre, (fenetre.get_size()[0]-250, 38))
-    for x in range(len(map.blockmaplayer0)):
-        for y in range(len(map.blockmaplayer0[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer0[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
-    for x in range(len(map.blockmaplayer1)):
-        for y in range(len(map.blockmaplayer1[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer1[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
-    for x in range(len(map.blockmaplayer2)):
-        for y in range(len(map.blockmaplayer2[x])):
-            fenetre.blit(map.blocks.blockstextures[map.blockmaplayer2[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
-    fenetre.blit(img_spawn, (map.spawn.spawn[0]*48+posx_edit_map, map.spawn.spawn[1]*48+posy_edit_map))
+    for x in range(len(game.map.blockmaplayer0)):
+        for y in range(len(game.map.blockmaplayer0[x])):
+            if game.map.blockmaplayer0[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
+                game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
+    for x in range(len(game.map.blockmaplayer1)):
+        for y in range(len(game.map.blockmaplayer1[x])):
+            if game.map.blockmaplayer1[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
+    for x in range(len(game.map.blockmaplayer2)):
+        for y in range(len(game.map.blockmaplayer2[x])):
+            if game.map.blockmaplayer2[x][y] != 0:
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
+
+    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+posx_edit_map, game.map.spawn.spawn[1]*48+posy_edit_map))
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
@@ -221,20 +240,18 @@ def editing_map() :
             posx_edit_map += speed
 
     if game.keys.get(pygame.K_RIGHT):
-        x = lon*48-fenetre_width-48
+        x = game.lon*48-fenetre_width-48
         x = -x
 
         if posx_edit_map > x:
             posx_edit_map -= speed
 
     if game.keys.get(pygame.K_UP):
-
-
         if posy_edit_map < 0:
             posy_edit_map += speed
 
     if game.keys.get(pygame.K_DOWN):
-        y = lar*48-fenetre_height
+        y = game.lar*48-fenetre_height
         y= -y
         if posy_edit_map>y:
             posy_edit_map -= speed
@@ -242,41 +259,41 @@ def editing_map() :
     blockundermousex = (pygame.mouse.get_pos()[0] - posx_edit_map) //48
     blockundermousey = (pygame.mouse.get_pos()[1] - posy_edit_map) //48
     if pygame.mouse.get_pressed()[2]:
-        if map.blockmaplayer1[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer2, blockundermousex, blockundermousey, actual_block)
-        elif map.blockmaplayer0[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, actual_block)
-        else:
-            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, actual_block)
+        if actual_block in game.map.listlayer2:
+            game.map.setblock(game.map.blockmaplayer2, blockundermousex, blockundermousey, actual_block)
+        elif actual_block in game.map.listlayer1:
+            game.map.setblock(game.map.blockmaplayer1, blockundermousex, blockundermousey, actual_block)
+        elif actual_block in game.map.listlayer0:
+            game.map.setblock(game.map.blockmaplayer0, blockundermousex, blockundermousey, actual_block)
     elif pygame.mouse.get_pressed()[0]:
-        if map.blockmaplayer2[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer2, blockundermousex, blockundermousey, 0)
-        elif map.blockmaplayer1[blockundermousex][blockundermousey]:
-            map.setblock(map.blockmaplayer1, blockundermousex, blockundermousey, 0)
+        if game.map.blockmaplayer2[blockundermousex][blockundermousey]:
+            game.map.setblock(game.map.blockmaplayer2, blockundermousex, blockundermousey, 0)
+        elif game.map.blockmaplayer1[blockundermousex][blockundermousey]:
+            game.map.setblock(game.map.blockmaplayer1, blockundermousex, blockundermousey, 0)
         else:
-            map.setblock(map.blockmaplayer0, blockundermousex, blockundermousey, 0)
+            game.map.setblock(game.map.blockmaplayer0, blockundermousex, blockundermousey, 0)
     if game.keys.get(pygame.K_s):
-            map.spawn.change_pos(blockundermousex, blockundermousey)
+        game.map.spawn.change_pos(blockundermousex, blockundermousey)
 
     try:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
     except:
         pass
 
     if actual_block != 1:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-200, 50])
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-250, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-200, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block-2], (32, 32)), [fenetre.get_size()[0]-250, 50])
     else:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[len(map.blocks.blockstextures)-1], (32, 32)), [fenetre.get_size()[0]-200, 50])
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[len(map.blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-250, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[len(game.map.blocks.blockstextures)-1], (32, 32)), [fenetre.get_size()[0]-200, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[len(game.map.blocks.blockstextures)-2], (32, 32)), [fenetre.get_size()[0]-250, 50])
     try:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-100, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block+1], (32, 32)), [fenetre.get_size()[0]-100, 50])
     except:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[1], (32, 32)), [fenetre.get_size()[0]-100, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[1], (32, 32)), [fenetre.get_size()[0]-100, 50])
     try:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[actual_block+2], (32, 32)), [fenetre.get_size()[0]-50, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block+2], (32, 32)), [fenetre.get_size()[0]-50, 50])
     except:
-        fenetre.blit(pygame.transform.scale(map.blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-50, 50])
+        fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-50, 50])
 
 #FPS :
 FPS = game.setting.fps
@@ -338,15 +355,15 @@ while boucle:
         index_gravite += 1
         if tab_gravite[index_gravite] == "True" :
             index_gravite = 0
-            gravite(game.player.rect, 150, (830, 100),1) #256, 412
+            gravite(game.player.rect, 150, (830, 100),1)
             gravite(socle[1], 100, (700, 570), 1)
         '''Gravite'''
     if game.stat == "options" :
         options()
         #Slider :
-        if pygame.mouse.get_pressed()[0] and game.setting.curseur_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020 :
+        if pygame.mouse.get_pressed()[0] and game.setting.curseur_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020 or pygame.mouse.get_pressed()[0] and game.setting.slider_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020:
             game.setting.curseur_FPS.x = x - 20
-        if pygame.mouse.get_pressed()[0] and game.setting.curseur_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020 :
+        if pygame.mouse.get_pressed()[0] and game.setting.curseur_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020 or pygame.mouse.get_pressed()[0] and game.setting.slider_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020:
             game.setting.curseur_VOLUME.x = x - 20
     if game.stat == "game" :
         game.player.mode = "player_run"
@@ -370,9 +387,9 @@ while boucle:
                 if actual_block > 1:
                     actual_block -=1
                 else:
-                    actual_block = len(map.blocks.blockstextures)-1
+                    actual_block = len(game.map.blocks.blockstextures)-1
             if event.key == pygame.K_d :
-                if actual_block < len(map.blocks.blockstextures)-1:
+                if actual_block < len(game.map.blocks.blockstextures)-1:
                     actual_block += 1
                 else:
                     actual_block = 1
@@ -384,13 +401,14 @@ while boucle:
             if game.stat == "game" :
                 if bouton_retour[1].collidepoint(event.pos):
                     bruitage_reculer.play()
-                    game.player.resize((356, 412))
+                    game.player.resize((156, 212))
                     game.stat = "menu"
                 if bouton_continue[1].collidepoint(event.pos):
-                    game.player.resize((96, 111))
+                    game.player.resize((56, 111)) #111
+                    game.player.rect = pygame.Rect(0,0 ,96,111)
                     bruitage_avancer.play()
                     game.stat = "playing"
-                    map.map_export("map1")
+                    game.map.map_export("map1")
                     game.player.rect.x = list(eval(open("maps/map1/spawn.txt").read()))[0]*48 - 24
                     game.player.rect.y = list(eval(open("maps/map1/spawn.txt").read()))[1]*48 - 96
                 if bouton_edit[1].collidepoint(event.pos):
@@ -425,5 +443,5 @@ while boucle:
 
     clock.tick(FPS)
 
-map.map_export("map1")
+game.map.map_export("map1")
 pygame.quit()

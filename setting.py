@@ -1,11 +1,12 @@
 import pygame
 
+
 class Settings:
 
-    def __init__(self) :
+    def __init__(self):
         self.volume = 0.1
         self.fps = 60
-        self.touche = {"haut" : pygame.K_SPACE, "droite" : pygame.K_d, "gauche" : pygame.K_q}
+        self.touche = {"haut": pygame.K_z, "droite": pygame.K_d, "gauche": pygame.K_q}
 
         self.bouton_rond_remplie_image = pygame.image.load("assets/bouton/bouton_settings_remplie.png")
         self.bouton_rond_vide_image = pygame.image.load("assets/bouton/bouton_settings_vide.png")
@@ -26,7 +27,7 @@ class Settings:
         self.selection_qwerty_rect = self.generate_rect(self.selection_qwerty, 580, 650)
         self.selection_fleche_rect = self.generate_rect(self.selection_fleche, 280, 650)
 
-        #Slider :
+        # Slider :
         self.slider_FPS_image = pygame.image.load("assets/settings/slider.png")
         self.slider_VOLUME_image = pygame.image.load("assets/settings/slider.png")
         self.curseur_image_FPS = pygame.image.load("assets/settings/curseur.png")
@@ -40,16 +41,13 @@ class Settings:
         self.curseur_FPS = self.generate_rect(self.curseur_image_FPS, 620, 100)
         self.curseur_VOLUME = self.generate_rect(self.curseur_image_VOLUME, 620, 300)
 
-
-    def changing_FPS(self, val) :
+    def changing_FPS(self, val):
         self.fps = val
 
+    def changing_VOLUME(self, value):
+        self.volume = value
 
-    def changing_VOLUME(self, value) :
-        self.volume = val
-
-
-    def draw(self, window) :
+    def draw(self, window):
         window.blit(self.selection_azerty, self.selection_azerty_rect)
         window.blit(self.selection_qwerty, self.selection_qwerty_rect)
         window.blit(self.selection_fleche, self.selection_fleche_rect)
@@ -61,25 +59,25 @@ class Settings:
         window.blit(self.b_touche_qwerty, (500, 500))
         window.blit(self.b_touche_azerty, (800, 500))
 
-    def generate_rect(self, image, x, y) :
+    def generate_rect(self, image, x, y):
         image_rect = image.get_rect()
         image_rect.x = x
         image_rect.y = y
         return image_rect
 
-    def changing(self, selection) :
-        if selection == "azerty" :
-            self.touche = {"haut" : pygame.K_z, "droite" : pygame.K_d, "gauche" : pygame.K_q}
+    def changing(self, selection):
+        if selection == "azerty":
+            self.touche = {"haut": pygame.K_z, "droite": pygame.K_d, "gauche": pygame.K_q}
             self.selection_azerty = self.bouton_rond_remplie_image
             self.selection_qwerty = self.bouton_rond_vide_image
             self.selection_fleche = self.bouton_rond_vide_image
-        elif selection == "qwerty" :
-            self.touche = {"haut" : pygame.K_w, "droite" : pygame.K_d, "gauche" : pygame.K_a}
+        elif selection == "qwerty":
+            self.touche = {"haut": pygame.K_w, "droite": pygame.K_d, "gauche": pygame.K_a}
             self.selection_azerty = self.bouton_rond_vide_image
             self.selection_qwerty = self.bouton_rond_remplie_image
             self.selection_fleche = self.bouton_rond_vide_image
-        else :
-            self.touche = {"haut" : pygame.K_UP, "droite" : pygame.K_RIGHT, "gauche" : pygame.K_LEFT}
+        else:
+            self.touche = {"haut": pygame.K_UP, "droite": pygame.K_RIGHT, "gauche": pygame.K_LEFT}
             self.selection_azerty = self.bouton_rond_vide_image
             self.selection_qwerty = self.bouton_rond_vide_image
             self.selection_fleche = self.bouton_rond_remplie_image

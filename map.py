@@ -12,6 +12,7 @@ class Blocks():
         self.blockstextures= {0: loadimage("vide"), 1: loadimage("Decor/Rock/rock_1"), 2: loadimage("Decor/Rock/rock_2"), 3: loadimage("Decor/Bush/bush_1"), 4: loadimage("Decor/Bush/bush_2"), 5 : loadimage("Tile/Grass/grass_1"), 6 : loadimage("Tile/Grass/grass_2"), 7 : loadimage("Tile/Ground/ground_1"), 8 : loadimage("Tile/Ground/ground_2"), 9 : loadimage("Tile/Ground/ground_3"), 10 : loadimage("Tile/Ground/ground_11"), 11:
         loadimage("Tile/Ground/ground_5"), 12 : loadimage("Tile/Ground/ground_7"), 13 : loadimage("Tile/Ground/ground_4"), 14 : loadimage("Tile/Ground/ground_6"), 15 : loadimage("Tile/Ground/ground_8"), 16 : loadimage("Tile/Ground/ground_9"), 17 : loadimage("Tile/Ground/ground_10"), 18 : loadimage("Tile/Grass/grass_3"), 19 : loadimage("Tile/Grass/grass_4"), 20 : loadimage("Tile/Grass/grass_5")}
 
+
 class Spawn :
     def __init__(self, x, y) :
         self.spawn = [x, y]
@@ -29,6 +30,9 @@ class Map():
         self.blockmaplayer0 = [[0 for i in range (self.height)] for i in range (self.width)]
         self.blockmaplayer1 = [[0 for i in range (self.height)] for i in range (self.width)]
         self.blockmaplayer2 = [[0 for i in range (self.height)] for i in range (self.width)]
+        self.listlayer0 = [7,8,9,10,11,12,13,14,15,16,17]
+        self.listlayer1 = [1,2,3,4,5,6,18,19,20]
+        self.listlayer2 = []
         self.spawn = Spawn(0, self.height//2)
         self.map_import(mapname)
 
