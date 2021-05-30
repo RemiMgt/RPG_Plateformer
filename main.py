@@ -47,14 +47,12 @@ fenetre = pygame.display.set_mode((fenetre_width, fenetre_height))
 #Initialisation :
 pygame.init()
 
-
-
 #Création game :
 game = Game()
 
 #Music :
 musique_menu = pygame.mixer.Sound("assets/music/musique_accueil.ogg")
-musique_menu.set_volume(game.setting.volume) #0.1
+musique_menu.set_volume(game.setting.volume)
 musique_menu.play(-1)
 
 #Bruitages :
@@ -159,26 +157,26 @@ def jeux():
 
 def playing() :
     game.player.animated()
+    game.cam[0] += (game.player.rect.x-game.cam[0]-(fenetre_width//2))/10
+    game.cam[1] += (game.player.rect.y-game.cam[1]-(fenetre_height//2))/10
     fenetre.blit(background, (0, 0))
     for x in range(len(game.map.blockmaplayer0)):
         for y in range(len(game.map.blockmaplayer0[x])):
             if game.map.blockmaplayer0[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+game.posx, y*48+game.posy))
-                game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48-game.cam[0], y*48-game.cam[1]))
     for x in range(len(game.map.blockmaplayer1)):
         for y in range(len(game.map.blockmaplayer1[x])):
             if game.map.blockmaplayer1[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48+game.posx, y*48+game.posy))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer1[x][y]], (x*48-game.cam[0], y*48-game.cam[1]))
     for x in range(len(game.map.blockmaplayer2)):
         for y in range(len(game.map.blockmaplayer2[x])):
             if game.map.blockmaplayer2[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+game.posx, y*48+game.posy))
+                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48-game.cam[0], y*48-game.cam[1]))
 
-    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+game.posx, game.map.spawn.spawn[1]*48+game.posy))
+    fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48-game.cam[0], game.map.spawn.spawn[1]*48-game.cam[1]))
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
-    fenetre.blit(game.player.image, game.player.rect)
-
+    fenetre.blit(game.player.image, (game.player.rect.x-game.cam[0], game.player.rect.y-game.cam[1]))
     game.player.movement = [0,0]
     game.player.mode = "player"
     if game.keys.get(game.setting.touche["haut"]) :
@@ -200,27 +198,20 @@ def playing() :
     if game.player.y_gravite > 15:
         game.player.y_gravite = 15
 
+
     game.player.rect, collisions = game.move(game.player.rect, game.player.movement, game.all_rect)
 
     if collisions['bottom']:
         game.player.y_gravite = 0
         game.air_timer = 0
+        game.player.is_jump = False
     elif collisions['top']:
-        game.player.y_gravite = 0
+        game.player.y_gravite = -3
+        game.player.is_jump=True
         game.air_timer = 0
     else:
+        game.player.is_jump = False
         game.air_timer += 1
-
-    #Map's movements function player's direction :
-    if game.player.mouvement == "droite" and game.player.rect.x >= 1000 :
-        print("Turn map to left")
-        game.posx -= 30
-        #bouger aussi la map en fonction
-
-    if game.player.mouvement == "gauche" and game.player.rect.x <= 200 :
-        print("Turn map to right")
-        game.posx += 30
-        #bouger aussi la map en fonction
 
 
 def editing_map() :
@@ -233,7 +224,6 @@ def editing_map() :
         for y in range(len(game.map.blockmaplayer0[x])):
             if game.map.blockmaplayer0[x][y] != 0:
                 fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer0[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
-                game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
     for x in range(len(game.map.blockmaplayer1)):
         for y in range(len(game.map.blockmaplayer1[x])):
             if game.map.blockmaplayer1[x][y] != 0:
@@ -309,7 +299,6 @@ def editing_map() :
         fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-50, 50])
 
 #FPS :
-FPS = game.setting.fps
 
 
 #FPS :
@@ -376,8 +365,17 @@ while boucle:
         #Slider :
         if pygame.mouse.get_pressed()[0] and game.setting.curseur_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020 or pygame.mouse.get_pressed()[0] and game.setting.slider_FPS.collidepoint(event.pos) and x >= 225 and x <= 1020:
             game.setting.curseur_FPS.x = x - 20
+            game.setting.change_FPS()
+
+            game.setting.text_fps = game.setting.font.render(str(game.setting.fps), True, game.setting.color_text)
+
+
         if pygame.mouse.get_pressed()[0] and game.setting.curseur_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020 or pygame.mouse.get_pressed()[0] and game.setting.slider_VOLUME.collidepoint(event.pos) and x >= 225 and x <= 1020:
             game.setting.curseur_VOLUME.x = x - 20
+            game.setting.change_volume()
+            musique_menu.set_volume(game.setting.volume)
+
+            game.setting.text_volume = game.setting.font.render(str(game.setting.volume), True, game.setting.color_text)
     if game.stat == "game" :
         game.player.mode = "player_run"
         jeux()
@@ -418,7 +416,7 @@ while boucle:
                     game.stat = "menu"
                 if bouton_continue[1].collidepoint(event.pos):
                     game.player.resize((56, 111)) #111
-                    game.player.rect = pygame.Rect(0,0 ,96,111)
+                    game.player.rect = pygame.Rect(0, 0, 56, 111)
                     bruitage_avancer.play()
                     game.stat = "playing"
                     game.map.map_export("map1")
@@ -429,18 +427,22 @@ while boucle:
                     game.stat = "editing_map"
 
             if game.stat == "menu" :
+                game.player.resize((136, 212))
                 if bouton_play[1].collidepoint(event.pos):
                     bruitage_avancer.play()
                     game.stat="game"
                 elif bouton_settings[1].collidepoint(event.pos):
                     bruitage_avancer.play()
                     game.stat="options"
+                    game.setting.pos_FPS()
+                    game.setting.pos_volume()
                 elif bouton_exit[1].collidepoint(event.pos):
                     bruitage_avancer.play()
                     boucle = False
             elif game.stat == "options" :
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
+
                     game.stat = "menu"
                 #Boutons touches :
                 if game.setting.selection_azerty_rect.collidepoint(event.pos) :
@@ -452,9 +454,16 @@ while boucle:
             elif game.stat == "editing_map" or game.stat == "playing":
                 if bouton_retour[1].collidepoint(event.pos) :
                     bruitage_reculer.play()
+                    if game.stat== "editing_map":
+                        for x in range(len(game.map.blockmaplayer0)):
+                            for y in range(len(game.map.blockmaplayer0[x])):
+                                if game.map.blockmaplayer0[x][y] != 0:
+                                    game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
                     game.stat = "game"
 
-    clock.tick(FPS)
+    clock.tick(game.setting.fps)
 
+game.setting.extract_fps()
+game.setting.extract_volume()
 game.map.map_export("map1")
 pygame.quit()

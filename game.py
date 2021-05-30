@@ -27,8 +27,7 @@ class Game :
         self.setting = Settings()
 
         #Pos map :
-        self.posx = 0
-        self.posy = 0
+        self.cam = [0,0]
 
 
     def check_collision(self, sprite, group): #FOnction qui retrun True si il y a collision entre sprite et group
@@ -55,7 +54,8 @@ class Game :
             elif movement[0] < 0:
                 rect.left = tile.right
                 collision_types['left'] = True
-        rect.y += movement[1]
+        if not self.player.is_jump:
+            rect.y += movement[1]
         hit_list = self.collision_test(rect, tiles)
         for tile in hit_list:
             if movement[1] > 0:
