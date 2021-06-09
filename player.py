@@ -9,7 +9,6 @@ class Player(Animation):
         self.game = game
         self.movement = [0,0]
         self.rect = self.image.get_rect()
-        self.is_jump=False
         self.rect.x = 0
         self.rect.y = 0
         self.speed = 13

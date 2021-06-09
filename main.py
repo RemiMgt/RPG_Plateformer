@@ -175,6 +175,12 @@ def playing() :
 
     fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48-game.cam[0], game.map.spawn.spawn[1]*48-game.cam[1]))
 
+    '''
+    for coffre in game.all_coffre:
+        fenetre.blit(coffre.image, coffre.rect)
+        coffre.lout(fenetre, background)
+    '''
+
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, (game.player.rect.x-game.cam[0], game.player.rect.y-game.cam[1]))
     game.player.movement = [0,0]
@@ -204,13 +210,9 @@ def playing() :
     if collisions['bottom']:
         game.player.y_gravite = 0
         game.air_timer = 0
-        game.player.is_jump = False
     elif collisions['top']:
-        game.player.y_gravite = -3
-        game.player.is_jump=True
-        game.air_timer = 0
+        game.player.y_gravite = 15
     else:
-        game.player.is_jump = False
         game.air_timer += 1
 
 
