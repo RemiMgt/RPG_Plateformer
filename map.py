@@ -2,6 +2,7 @@ import pygame
 import os
 
 
+
 class Blocks():
     def __init__(self):
         # loadimage = lambda filename: pygame.transform.scale(pygame.image.load("assets/texture/"+filename+".png"), (48, 48))

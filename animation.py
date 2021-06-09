@@ -47,7 +47,6 @@ class Animation(pygame.sprite.Sprite):
             if self.false:
                 self.is_gauche =[False]*self.path[under_dir]
             for i in range(self.path[under_dir]):
-                print(f"assets/{self.dir}/{under_dir}/{under_dir}{i + 1}.png")
                 img = pygame.image.load(f"assets/{self.dir}/{under_dir}/{under_dir}{i + 1}.png").convert()
                 if self.is_gauche[j] != False:
                     self.imggauche = pygame.transform.flip(img, True, False)
