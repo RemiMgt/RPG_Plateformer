@@ -128,11 +128,25 @@ cadre = pygame.image.load("assets/cadre.png")
 
 #TXT
 font = pygame.font.SysFont("aquakanattc", 20, True, False)
-texte_maps = pygame.Surface((300, fenetre.get_size()[1]))
-for i in range(len(os.listdir("./maps/"))):
-    text_surface = font.render(str(os.listdir("./maps/")[i]), True, (252, 255, 228))
+
+#map selection
+map_selectionee = 0
+
+def makemaptxt(font):
+    texte_maps = pygame.Surface((300, fenetre.get_size()[1]))
     texte_maps.fill((25,75,50))
-    texte_maps.blit(text_surface, [30, 30+i*30])
+    for i in range(len(os.listdir("./maps/"))):
+        text_surface = font.render(str(os.listdir("./maps/")[i][:-1]), True, (252, 255, 228))
+        if i != map_selectionee:
+            texte_maps.blit(text_surface, [30, 30+i*30])
+        else:
+            texte_map_select = pygame.Surface((300, 20))
+            texte_map_select.blit(text_surface, [0, 0])
+            texte_map_select.fill((0, 0, 0))
+            texte_maps.blit(texte_map_select, [30, 30+i*30])
+    return(texte_maps)
+
+texte_maps = makemaptxt(font)
 
 
 #Fonctions jeux:
@@ -154,6 +168,7 @@ def jeux():
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(texte_maps, [fenetre.get_size()[0]-300, 0])
     fenetre.blit(bouton_create_map[0], bouton_create_map[1])
+    fenetre.blit(phrase_unicode, (300, 300))
 
 def playing() :
     game.player.animated()
@@ -300,8 +315,9 @@ def editing_map() :
     except:
         fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[2], (32, 32)), [fenetre.get_size()[0]-50, 50])
 
-#FPS :
-
+#Map :
+text_map = ""
+phrase_unicode = font.render(text_map, True, (0, 0, 0))
 
 #FPS :
 clock = pygame.time.Clock()
@@ -402,11 +418,22 @@ while boucle:
                 if len(game.text_input) < 15:
                     game.text_input += event.unicode
 
+                if event.key != 8 :
+                    text_map += event.unicode
+                else :
+                    text_map = text_map[:-1]
+                phrase_unicode = font.render(text_map, True, (0, 0, 0))
+                print(text_map)
+
                 text_input = font.render(game.text_input, True, (252, 255, 228))
                 fenetre.blit(text_input, (300,300))
-                if event.key == pygame.K_BACKSPACE:
+
+
+                if event.key == pygame.K_RETURN:
+                    text_map = ""
                     game.is_input = False
                     game.map.map_create(game.text_input)
+                    texte_maps = makemaptxt(font)
                     game.text_input = ''
             if game.stat == 'editing_map':
                 if event.key == pygame.K_q:
@@ -483,5 +510,5 @@ while boucle:
 
 game.setting.extract_fps()
 game.setting.extract_volume()
-game.map.map_export("map1")
+game.map.map_export(os.listdir("./maps/")[map_selectionee])
 pygame.quit()
