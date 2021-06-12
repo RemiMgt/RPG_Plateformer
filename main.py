@@ -5,7 +5,7 @@
     Principe du jeu:
 
     modules :
-    - numpy (pour les random et autres)
+    - random (pour les random et autres)
     - pygame_gui eventuellement pour des popups (ajouter des pages)
 
 Elements a dev:
@@ -39,23 +39,9 @@ pygame.init()
 #Création game :
 game = Game()
 
-#Music :
-musique_menu = pygame.mixer.Sound("assets/music/musique_accueil.ogg")
-musique_menu.set_volume(game.setting.volume)
-musique_menu.play(-1)
-
-#Bruitages :
-bruitage_avancer = pygame.mixer.Sound("assets/music/bruitage_avancer.ogg")
-bruitage_reculer = pygame.mixer.Sound("assets/music/bruitage_retour.ogg")
-bruitage_avancer.set_volume(5)
-bruitage_reculer.set_volume(5)
-
-img_spawn = pygame.image.load("assets/texture/spawn.png")
-
-#Menu :
-background = pygame.image.load("assets/fond_ecran.png")
-background = pygame.transform.scale(background, (fenetre_width, fenetre_height))
-images_boutons = pygame.image.load("assets/bouton/boutons.png")
+#TXT
+font = pygame.font.SysFont("aquakanattc", 20, True, False)
+text_edit_font = pygame.font.SysFont("aquakanattc", 25, True, False)
 
 #Fonctions :
 
@@ -87,6 +73,41 @@ def generate_rect_button(lien, pos, dim) :
     new_image_rect.y = pos[1]
     return [new_image, new_image_rect]
 
+#Music :
+musique_menu = pygame.mixer.Sound("assets/music/musique_accueil.ogg")
+musique_menu.set_volume(game.setting.volume)
+musique_menu.play(-1)
+
+#Bruitages :
+bruitage_avancer = pygame.mixer.Sound("assets/music/bruitage_avancer.ogg")
+bruitage_reculer = pygame.mixer.Sound("assets/music/bruitage_retour.ogg")
+bruitage_avancer.set_volume(5)
+bruitage_reculer.set_volume(5)
+
+img_spawn = pygame.image.load("assets/texture/spawn.png")
+
+#Menu :
+background = pygame.image.load("assets/fond_ecran.png")
+background = pygame.transform.scale(background, (fenetre_width, fenetre_height))
+images_boutons = pygame.image.load("assets/bouton/boutons.png")
+
+#Edition :
+image_spawn = pygame.image.load("assets/texture/spawn.png")
+image_coffre = pygame.image.load("assets/coffre/coffre.png")
+image_monstre1 = pygame.image.load("assets/monstre/monstre.png")
+image_monstre2 = pygame.image.load("assets/monstre/monstre.png")
+image_monstre3 = pygame.image.load("assets/monstre/monstre.png")
+list_image_edit = [image_spawn, image_coffre, image_monstre1, image_monstre2, image_monstre3]
+for i in range(len(list_image_edit)) :
+    list_image_edit[i] = pygame.transform.scale(list_image_edit[i], (40, 40))
+color_text = (255, 255, 255)
+text_spawn = text_edit_font.render('s', True, color_text)
+text_coffre = text_edit_font.render('c', True, color_text)
+text_monstre1 = text_edit_font.render('i', True, color_text)
+text_monstre2 = text_edit_font.render('o', True, color_text)
+text_monstre3 = text_edit_font.render('p', True, color_text)
+list_text_edit = [text_spawn, text_coffre, text_monstre1, text_monstre2, text_monstre3]
+
 
 #Boutons :
 bouton_play = generate_rect_button("assets/bouton/bouton_play.png", (250, 150), (170, 45))
@@ -111,9 +132,6 @@ posx_edit_map = 0
 posy_edit_map = 0
 actual_block = 1
 cadre = pygame.image.load("assets/cadre.png")
-
-#TXT
-font = pygame.font.SysFont("aquakanattc", 20, True, False)
 
 #map selection
 map_selectionee = 0
@@ -241,6 +259,14 @@ def editing_map() :
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
 
+    #Items à ajouter edit :
+    y = 120
+    for loop in range(len(list_image_edit)) :
+        fenetre.blit(list_image_edit[loop], (1240, y))
+        fenetre.blit(list_text_edit[loop], (1210, y+10))
+        y += 60
+
+
     speed = 20
     if game.keys.get(pygame.K_LEFT):
         if posx_edit_map < 0:
@@ -315,7 +341,6 @@ boucle = True
 while boucle:
     #Mouse :
     x, y = pygame.mouse.get_pos()
-    print(clock)
 
 
     # :hover --> boutons :

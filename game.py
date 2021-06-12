@@ -16,6 +16,7 @@ class Game :
         self.player = Player(self)
         # self.all_coffre.add(Coffre(self))
         self.all_monstre.add(Monstre(self, "basique"))
+        self.all_coffre.add(Coffre(self))
         self.lon,self.lar = 1024,64
         self.map = Map(self.lon, self.lar, "map1")
         self.stat = "menu"
