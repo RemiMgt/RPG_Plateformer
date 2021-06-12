@@ -4,8 +4,6 @@
 
     Principe du jeu:
 
-    personnages:
-
     modules :
     - numpy (pour les random et autres)
     - pygame_gui eventuellement pour des popups (ajouter des pages)
@@ -13,17 +11,8 @@
 Elements a dev:
     -physiques
     -gestion des monstres (IA)
-    -gestion des niveaux
     -gestion coffres armes et menu
     -gestion du personnage(vie, inventaire, etc)
-
-Options :
-    - Musique
-    - touches
-    - fps
-
-Fond ecran :
-    - Fond ecran : fond ecran de la map flouté
 
 
 """
@@ -117,9 +106,6 @@ tab_gravite.append("True")
 
 index_gravite = 0
 
-#Map :
-
-
 #édition
 posx_edit_map = 0
 posy_edit_map = 0
@@ -136,13 +122,13 @@ def makemaptxt(font):
     texte_maps = pygame.Surface((300, fenetre.get_size()[1]))
     texte_maps.fill((25,75,50))
     for i in range(len(os.listdir("./maps/"))):
-        text_surface = font.render(str(os.listdir("./maps/")[i][:-1]), True, (252, 255, 228))
+        text_surface = font.render(str(os.listdir("./maps/")[i][:-1]), True, ( 52, 188, 44 ))
         if i != map_selectionee:
             texte_maps.blit(text_surface, [30, 30+i*30])
         else:
-            texte_map_select = pygame.Surface((300, 20))
+            texte_map_select = pygame.Surface((300, 14))
+            texte_map_select.fill(( 24, 72, 21 ))
             texte_map_select.blit(text_surface, [0, 0])
-            texte_map_select.fill((0, 0, 0))
             texte_maps.blit(texte_map_select, [30, 30+i*30])
     return(texte_maps)
 
@@ -168,7 +154,9 @@ def jeux():
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(texte_maps, [fenetre.get_size()[0]-300, 0])
     fenetre.blit(bouton_create_map[0], bouton_create_map[1])
-    fenetre.blit(phrase_unicode, (300, 300))
+    if game.is_input :
+        fenetre.blit(text_Text, (1050, 600))
+        fenetre.blit(phrase_unicode, (1090, 600))
 
 def playing() :
     game.player.animated()
@@ -190,11 +178,10 @@ def playing() :
 
     fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48-game.cam[0], game.map.spawn.spawn[1]*48-game.cam[1]))
 
-    '''
+    #Coffres :
     for coffre in game.all_coffre:
         fenetre.blit(coffre.image, coffre.rect)
         coffre.lout(fenetre, background)
-    '''
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, (game.player.rect.x-game.cam[0], game.player.rect.y-game.cam[1]))
@@ -318,6 +305,7 @@ def editing_map() :
 #Map :
 text_map = ""
 phrase_unicode = font.render(text_map, True, (0, 0, 0))
+text_Text = font.render('Map : ', True, (0, 0, 0))
 
 #FPS :
 clock = pygame.time.Clock()
@@ -327,6 +315,8 @@ boucle = True
 while boucle:
     #Mouse :
     x, y = pygame.mouse.get_pos()
+    print(clock)
+
 
     # :hover --> boutons :
     if bouton_play[1].collidepoint((x,y)) :
@@ -393,7 +383,7 @@ while boucle:
             game.setting.change_volume()
             musique_menu.set_volume(game.setting.volume)
 
-            game.setting.text_volume = game.setting.font.render(str(game.setting.volume), True, game.setting.color_text)
+            game.setting.text_volume = game.setting.font.render(str(int(game.setting.volume * 10)), True, game.setting.color_text)
     if game.stat == "game" :
         game.player.mode = "player_run"
         jeux()
@@ -414,27 +404,22 @@ while boucle:
         if event.type == pygame.KEYDOWN:
             game.keys[event.key] = True
             if game.is_input:
+                if event.key != pygame.K_BACKSPACE :
 
-                if len(game.text_input) < 15:
-                    game.text_input += event.unicode
-
-                if event.key != 8 :
-                    text_map += event.unicode
-                else :
+                    if len(text_map) < 15:
+                        text_map += event.unicode
+                else:
                     text_map = text_map[:-1]
+
                 phrase_unicode = font.render(text_map, True, (0, 0, 0))
-                print(text_map)
-
-                text_input = font.render(game.text_input, True, (252, 255, 228))
-                fenetre.blit(text_input, (300,300))
-
 
                 if event.key == pygame.K_RETURN:
-                    text_map = ""
+
                     game.is_input = False
-                    game.map.map_create(game.text_input)
+                    game.map.map_create(text_map)
                     texte_maps = makemaptxt(font)
-                    game.text_input = ''
+                    text_map = ""
+                    phrase_unicode = font.render(text_map, True, (0, 0, 0))
             if game.stat == 'editing_map':
                 if event.key == pygame.K_q:
                     if actual_block > 1:
@@ -460,16 +445,31 @@ while boucle:
                         game.player.resize((156, 212))
                         game.stat = "menu"
                     if bouton_continue[1].collidepoint(event.pos):
+                        game.map = Map(game.lon, game.lar, os.listdir("./maps/")[map_selectionee])
+                        game.all_rect = []
+                        for x in range(len(game.map.blockmaplayer0)):
+                            for y in range(len(game.map.blockmaplayer0[x])):
+                                if game.map.blockmaplayer0[x][y] != 0:
+                                    game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
                         game.player.resize((56, 111)) #111
                         game.player.rect = pygame.Rect(0, 0, 56, 111)
                         bruitage_avancer.play()
                         game.stat = "playing"
-                        game.map.map_export("map1")
-                        game.player.rect.x = list(eval(open("maps/map1/spawn.txt").read()))[0]*48 - 24
-                        game.player.rect.y = list(eval(open("maps/map1/spawn.txt").read()))[1]*48 - 96
+                        game.map.map_export(os.listdir("./maps/")[map_selectionee])
+                        game.player.rect.x = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[0]*48 - 24
+                        game.player.rect.y = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[1]*48 - 96
                     if bouton_edit[1].collidepoint(event.pos):
                         bruitage_avancer.play()
                         game.stat = "editing_map"
+
+                if x >= fenetre.get_size()[0]-300:
+                    try:
+                        if os.listdir("./maps/")[(y-30)//30]:
+                            map_selectionee = (y-30)//30
+                    except:
+                        pass
+                    texte_maps = makemaptxt(font)
+
 
             if game.stat == "menu" :
                 game.player.resize((136, 212))

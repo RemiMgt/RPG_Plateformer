@@ -15,8 +15,8 @@ class Game :
         self.all_monstre = pygame.sprite.Group()
         self.player = Player(self)
         # self.all_coffre.add(Coffre(self))
-        self.all_monstre.add(Monstre(self))
-        self.lon,self.lar = 64,64
+        self.all_monstre.add(Monstre(self, "basique"))
+        self.lon,self.lar = 1024,64
         self.map = Map(self.lon, self.lar, "map1")
         self.stat = "menu"
         self.index = 0

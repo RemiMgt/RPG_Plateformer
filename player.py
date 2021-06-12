@@ -16,8 +16,8 @@ class Player(Animation):
         self.health = 5
         self.is_jump =False
         self.y_gravite = 1
-        self.mouvement = "" #Droite ou Gauche
-
+        self.mouvement = ""
+        self.tab_potion = {"petite" : 2, "forte" : 3}
         self.inventaire = {}
 
     def droite(self):
@@ -32,5 +32,8 @@ class Player(Animation):
         if self.game.air_timer < 12:
             self.movement[1] = self.speed_jump
 
-    def accroupir(self):
-        pass
+    def heal(self, potion) :
+        if self.health + self.tab_potion[potion] >= 5 :
+            self.health = 5
+        else :
+            self.health += self.tab_potion[potion]

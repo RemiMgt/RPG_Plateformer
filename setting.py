@@ -14,7 +14,7 @@ class Settings:
         self.color_text = (255, 255, 255)
 
         self.text_fps = self.font.render(str(self.fps), True, self.color_text)
-        self.text_volume = self.font.render(str(self.volume), True, self.color_text)
+        self.text_volume = self.font.render(str(self.volume * 10), True, self.color_text)
 
         self.fps_text = self.font.render("FPS", True, self.color_text)
         self.volume_text = self.font.render("Volume", True, self.color_text)

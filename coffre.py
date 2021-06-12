@@ -11,7 +11,7 @@ class Coffre(Animation):
         self.rect.x = 100
         self.rect.y = 100
         self.oui = pygame.image.load("assets/bouton/oui.png")
-        self.oui_rect =self.oui.get_rect()
+        self.oui_rect = self.oui.get_rect()
         self.non = pygame.image.load("assets/bouton/non.png")
         self.non_rect = self.non.get_rect()
         self.fond_gris = pygame.image.load("assets/menu_item.jpg")
