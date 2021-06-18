@@ -45,6 +45,7 @@ class Map():
             pass
 
     def map_export(self, filename):
+        filename = filename.replace('\r', '')
         mapexport = open("maps/"+filename+"/maplayer0.txt", "w")
         mapexport.write(str(self.blockmaplayer0))
         mapexport.close()
@@ -59,6 +60,7 @@ class Map():
         mapexport.close()
 
     def map_import(self, filename):
+        filename = filename.replace('\r', '')
         mapimport = open("maps/"+filename+"/maplayer0.txt", "r")
         self.blockmaplayer0 = list(eval(mapimport.read()))
         mapimport.close()
@@ -73,6 +75,8 @@ class Map():
         mapimport.close()
 
     def map_create(self, filename):
+
+        filename = filename.replace('\r', '')
         os.makedirs("./maps/"+filename)
         blockmaplayer0 = [[0 for i in range (self.height)] for i in range (self.width)]
         blockmaplayer1 = [[0 for i in range (self.height)] for i in range (self.width)]

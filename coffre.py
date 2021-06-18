@@ -5,15 +5,18 @@ import random
 class Coffre(Animation):
     def __init__(self, game):
         self.game = game
+        self.is_loot = False
         super().__init__("coffre", {"coffre": 8}, {"coffre":0.5}, "coffre", is_stop=True, group=self.game.all_coffre)
         self.rect = self.image.get_rect()
         self.rect.x = 100
         self.rect.y = 100
+        self.old_oui = pygame.image.load("assets/bouton/oui.png")
         self.oui = pygame.image.load("assets/bouton/oui.png")
         self.oui= pygame.transform.scale(self.oui, (self.oui.get_width()//2, self.oui.get_height()//2))
         self.oui_rect = self.oui.get_rect()
         self.oui_rect.x = 490
         self.oui_rect.y =380
+        self.old_non = pygame.image.load("assets/bouton/non.png")
         self.non = pygame.image.load("assets/bouton/non.png")
         self.non = pygame.transform.scale(self.non, (self.non.get_width()//2, self.non.get_height()//2))
         self.non_rect = self.non.get_rect()
@@ -38,19 +41,24 @@ class Coffre(Animation):
         a = True
         while a:
             mouse = pygame.mouse.get_pos()
-            if self.oui_rect.collidepoint(mouse):
-                self.oui= pygame.transform.scale(self.oui, (self.oui.get_width()//2+10, self.oui.get_height()//2+10))
-            else:
-                self.oui= pygame.transform.scale(self.oui, (self.oui.get_width()//2, self.oui.get_height()//2))
-            if self.non_rect.collidepoint(mouse):
-                self.non= pygame.transform.scale(self.non, (self.non.get_width()//2+10, self.non.get_height()//2+10))
-            else:
-                self.non= pygame.transform.scale(self.non, (self.non.get_width()//2, self.non.get_height()//2))
-            screen.blit(background, (0,0))
             screen.blit(self.fond_gris, (450,200))
+            screen.blit(background, (0,0))
             screen.blit(self.oui, self.oui_rect)
             screen.blit(self.non, self.non_rect)
+            if self.oui_rect.collidepoint(mouse):
+                self.oui= pygame.transform.scale(self.oui, (self.oui.get_width()+10, self.oui.get_height()+10))
+
+            else:
+                self.oui= self.old_oui
+
+            if self.non_rect.collidepoint(mouse):
+                self.non= pygame.transform.scale(self.non, (self.non.get_width()+10, self.non.get_height()+10))
+
+            else:
+                self.non= self.old_non
+
             pygame.display.flip()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     pygame.quit()

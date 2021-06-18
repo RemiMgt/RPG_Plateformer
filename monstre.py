@@ -23,3 +23,8 @@ class Monstre(Animation) :
 
     def damage(self, degat, arme) :
         self.game.player.health -= self.tab_damage[arme]
+
+    def move(self, layer0):
+        #if layer0[][] !=0
+
+        pass

@@ -9,6 +9,7 @@ from setting import Settings
 class Game :
     def __init__(self):
         self.text_input = ''
+
         self.is_input = False
         self.keys = {}
         self.all_coffre = pygame.sprite.Group()
@@ -17,6 +18,7 @@ class Game :
         # self.all_coffre.add(Coffre(self))
         self.all_monstre.add(Monstre(self, "basique"))
         self.all_coffre.add(Coffre(self))
+        self.coffre = Coffre(self)
         self.lon,self.lar = 1024,64
         self.map = Map(self.lon, self.lar, "map1")
         self.stat = "menu"

@@ -140,7 +140,7 @@ def makemaptxt(font):
     texte_maps = pygame.Surface((300, fenetre.get_size()[1]))
     texte_maps.fill((25,75,50))
     for i in range(len(os.listdir("./maps/"))):
-        text_surface = font.render(str(os.listdir("./maps/")[i][:-1]), True, ( 52, 188, 44 ))
+        text_surface = font.render(str(os.listdir("./maps/")[i]), True, ( 52, 188, 44 ))
         if i != map_selectionee:
             texte_maps.blit(text_surface, [30, 30+i*30])
         else:
@@ -192,14 +192,16 @@ def playing() :
     for x in range(len(game.map.blockmaplayer2)):
         for y in range(len(game.map.blockmaplayer2[x])):
             if game.map.blockmaplayer2[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48-game.cam[0], y*48-game.cam[1]))
-
+                #fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48-game.cam[0], y*48-game.cam[1]))
+                if game.map.blockmaplayer2[x][y] == 99:
+                    fenetre.blit(game.coffre.image, (x*48+posx_edit_map, y*48+posy_edit_map))
     fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48-game.cam[0], game.map.spawn.spawn[1]*48-game.cam[1]))
 
     #Coffres :
     for coffre in game.all_coffre:
-        fenetre.blit(coffre.image, coffre.rect)
-        coffre.lout(fenetre, background)
+        #fenetre.blit(coffre.image, coffre.rect)
+        if coffre.is_loot:
+            coffre.lout(fenetre, background)
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, (game.player.rect.x-game.cam[0], game.player.rect.y-game.cam[1]))
@@ -253,8 +255,9 @@ def editing_map() :
     for x in range(len(game.map.blockmaplayer2)):
         for y in range(len(game.map.blockmaplayer2[x])):
             if game.map.blockmaplayer2[x][y] != 0:
-                fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
-
+                #fenetre.blit(game.map.blocks.blockstextures[game.map.blockmaplayer2[x][y]], (x*48+posx_edit_map, y*48+posy_edit_map))
+                if game.map.blockmaplayer2[x][y] == 99:
+                    fenetre.blit(game.coffre.image, (x*48+posx_edit_map, y*48+posy_edit_map))
     fenetre.blit(img_spawn, (game.map.spawn.spawn[0]*48+posx_edit_map, game.map.spawn.spawn[1]*48+posy_edit_map))
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
@@ -305,13 +308,26 @@ def editing_map() :
             game.map.setblock(game.map.blockmaplayer1, blockundermousex, blockundermousey, 0)
         else:
             game.map.setblock(game.map.blockmaplayer0, blockundermousex, blockundermousey, 0)
+
+    ''' Edition blocks specials '''
     if game.keys.get(pygame.K_s):
         game.map.spawn.change_pos(blockundermousex, blockundermousey)
+    elif game.keys.get(pygame.K_c) :
+        game.map.blockmaplayer2[blockundermousex][blockundermousey] = 99
+    elif game.keys.get(pygame.K_i) :
+        pass
+    elif game.keys.get(pygame.K_o) :
+        pass
+    elif game.keys.get(pygame.K_p) :
+        pass
+
+
 
     try:
         fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block], (32, 32)), [fenetre.get_size()[0]-143, 49])
     except:
         pass
+
 
     if actual_block != 1:
         fenetre.blit(pygame.transform.scale(game.map.blocks.blockstextures[actual_block-1], (32, 32)), [fenetre.get_size()[0]-200, 50])
@@ -341,6 +357,7 @@ boucle = True
 while boucle:
     #Mouse :
     x, y = pygame.mouse.get_pos()
+    text_FPS = font.render(str(int(clock.get_fps())), True, (0, 0, 0))  # non parce que c'est mal dev :kappa:
 
 
     # :hover --> boutons :
@@ -417,7 +434,7 @@ while boucle:
         editing_map()
     if game.stat == "playing" :
         playing()
-
+    fenetre.blit(text_FPS, (10, 10))
     pygame.display.flip()
 
     for event in pygame.event.get() :
@@ -470,7 +487,7 @@ while boucle:
                         game.player.resize((156, 212))
                         game.stat = "menu"
                     if bouton_continue[1].collidepoint(event.pos):
-                        game.map = Map(game.lon, game.lar, os.listdir("./maps/")[map_selectionee])
+                        game.map.map_import( os.listdir("./maps/")[map_selectionee])
                         game.all_rect = []
                         for x in range(len(game.map.blockmaplayer0)):
                             for y in range(len(game.map.blockmaplayer0[x])):
@@ -484,6 +501,7 @@ while boucle:
                         game.player.rect.x = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[0]*48 - 24
                         game.player.rect.y = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[1]*48 - 96
                     if bouton_edit[1].collidepoint(event.pos):
+                        game.map.map_import( os.listdir("./maps/")[map_selectionee])
                         bruitage_avancer.play()
                         game.stat = "editing_map"
 
