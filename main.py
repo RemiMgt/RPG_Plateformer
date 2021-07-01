@@ -27,6 +27,7 @@ import os
 
 from game import Game
 from map import *
+import shutil
 
 #Création de la fenêtre :
 fenetre_width, fenetre_height = 1290, 723  #1290 / 723
@@ -199,9 +200,15 @@ def playing() :
 
     #Coffres :
     for coffre in game.all_coffre:
-        #fenetre.blit(coffre.image, coffre.rect)
         if coffre.is_loot:
             coffre.lout(fenetre, background)
+
+    #Monstres :
+    '''
+    for monstre in game.all_monstre :
+        monstre.show(fenetre, )
+        monstre.move()
+    '''
 
     fenetre.blit(bouton_retour[0], bouton_retour[1])
     fenetre.blit(game.player.image, (game.player.rect.x-game.cam[0], game.player.rect.y-game.cam[1]))
@@ -444,24 +451,32 @@ while boucle:
             pygame.quit()
 
         if event.type == pygame.KEYDOWN:
-            game.keys[event.key] = True
-            if game.is_input:
-                if event.key != pygame.K_BACKSPACE :
+            if game.stat == "game" :
+                game.keys[event.key] = True
+                if game.is_input:
+                    if event.key != pygame.K_BACKSPACE :
 
-                    if len(text_map) < 15:
-                        text_map += event.unicode
-                else:
-                    text_map = text_map[:-1]
+                        if len(text_map) < 15:
+                            text_map += event.unicode
+                    else:
+                        text_map = text_map[:-1]
 
-                phrase_unicode = font.render(text_map, True, (0, 0, 0))
-
-                if event.key == pygame.K_RETURN:
-
-                    game.is_input = False
-                    game.map.map_create(text_map)
-                    texte_maps = makemaptxt(font)
-                    text_map = ""
                     phrase_unicode = font.render(text_map, True, (0, 0, 0))
+
+                    if event.key == pygame.K_RETURN:
+                        game.is_input = False
+                        game.map.map_create(text_map)
+                        texte_maps = makemaptxt(font)
+                        text_map = ""
+                        phrase_unicode = font.render(text_map, True, (0, 0, 0))
+
+                    '''SUPPR MAPS: '''
+                if event.key == pygame.K_BACKSPACE:
+                    shutil.rmtree(("./maps/"+os.listdir("./maps/")[map_selectionee]))
+                    map_selectionee = 0
+                    texte_maps = makemaptxt(font)
+
+
             if game.stat == 'editing_map':
                 if event.key == pygame.K_q:
                     if actual_block > 1:
@@ -497,7 +512,6 @@ while boucle:
                         game.player.rect = pygame.Rect(0, 0, 56, 111)
                         bruitage_avancer.play()
                         game.stat = "playing"
-                        game.map.map_export(os.listdir("./maps/")[map_selectionee])
                         game.player.rect.x = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[0]*48 - 24
                         game.player.rect.y = list(eval(open("maps/"+os.listdir("./maps/")[map_selectionee]+"/spawn.txt").read()))[1]*48 - 96
                     if bouton_edit[1].collidepoint(event.pos):
@@ -547,6 +561,7 @@ while boucle:
                             for y in range(len(game.map.blockmaplayer0[x])):
                                 if game.map.blockmaplayer0[x][y] != 0:
                                     game.all_rect.append(pygame.Rect(x * 48, y * 48, 48, 48))
+                        game.map.map_export(os.listdir("./maps/")[map_selectionee])
                     game.stat = "game"
 
     clock.tick(game.setting.fps)

@@ -4,6 +4,7 @@ from coffre import Coffre
 from monstre import Monstre
 from map import *
 from setting import Settings
+from cle import Cle
 
 
 class Game :
@@ -33,7 +34,11 @@ class Game :
 
         #Pos map :
         self.cam = [0,0]
+        self.cle = Cle()
 
+        #Game OVER and Sortie Gagné :
+        self.mort = False
+        self.win = False
 
     def check_collision(self, sprite, group): #FOnction qui retrun True si il y a collision entre sprite et group
         return pygame.sprite.spritecollide(sprite, group, True, pygame.sprite.collide_mask) #sprite / group / Oui ou non détruire entité si il y a collision
