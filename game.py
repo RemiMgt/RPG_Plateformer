@@ -34,7 +34,7 @@ class Game :
 
         #Pos map :
         self.cam = [0,0]
-        self.cle = Cle()
+        self.cle = Cle(self)
 
         #Game OVER and Sortie Gagné :
         self.mort = False
